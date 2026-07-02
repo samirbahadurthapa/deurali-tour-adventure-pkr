@@ -1,0 +1,139 @@
+[
+  {
+    "_id": "pkg_1",
+    "name": "Muktinath Tour",
+    "shortDescription": "A 1 Night 2 Days pilgrimage & mountain road trip to the sacred Muktinath Temple.",
+    "description": "Travel by private jeep from Pokhara through the dramatic Kali Gandaki gorge, the deepest gorge in the world, up to the sacred Muktinath Temple (3,710m) in Mustang. This route is best covered by a 4x4 jeep given the rugged mountain roads. Along the way you will pass Jomsom, Marpha's apple orchards, and stark high-altitude desert scenery before reaching the temple, revered by both Hindus and Buddhists.",
+    "duration": 2,
+    "price": 14500,
+    "image": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
+    "location": "Mustang, via Jomsom",
+    "difficulty": "Jeep (Mahindra Scorpio)",
+    "highlights": [
+      "Private Scorpio jeep with an experienced mountain driver",
+      "Drive through the world's deepest gorge, Kali Gandaki",
+      "Visit the sacred 108 water spouts and eternal flame at Muktinath Temple",
+      "Stop in Jomsom and Marpha for apple orchards and local brandy",
+      "Overnight stay included in Jomsom/Muktinath"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Pokhara to Muktinath by Jeep",
+        "description": "Early morning departure from Pokhara. Drive along the Kali Gandaki riverbed via Beni, Tatopani, Jomsom, and Kagbeni, arriving in Muktinath by afternoon. Visit the temple complex and overnight near Muktinath."
+      },
+      {
+        "day": 2,
+        "title": "Muktinath to Pokhara",
+        "description": "Morning temple visit for those who missed it the day before, then drive back to Pokhara, stopping at scenic viewpoints and Marpha village along the way."
+      }
+    ],
+    "maxGroupSize": 7,
+    "bestSeason": [
+      "Spring",
+      "Autumn"
+    ],
+    "rating": 4.9
+  },
+  {
+    "_id": "pkg_2",
+    "name": "Pokhara Sightseeing Tour",
+    "shortDescription": "A full-day private car tour covering Pokhara's best lakes, caves, and viewpoints.",
+    "description": "Explore Pokhara at your own pace in a comfortable private car. This full-day sightseeing tour covers the city's most-loved spots including Phewa Lake, the Peace Pagoda, Davis Falls, Gupteshwor Cave, and the International Mountain Museum, with a sunrise option at Sarangkot for panoramic Annapurna views.",
+    "duration": 1,
+    "price": 4500,
+    "image": "https://images.unsplash.com/photo-1558862107-d49ef2a04d72?auto=format&fit=crop&w=1200&q=80",
+    "location": "Pokhara Valley",
+    "difficulty": "Sedan (Hyundai Creta)",
+    "highlights": [
+      "Sunrise mountain views from Sarangkot (optional add-on)",
+      "Boating on the serene Phewa Lake",
+      "Visit the World Peace Pagoda",
+      "Explore Davis Falls and Gupteshwor Mahadev Cave",
+      "Comfortable AC sedan with a local driver-guide"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Full Day Pokhara City & Lake Tour",
+        "description": "Pickup from your hotel, drive up to Sarangkot for mountain views, then visit Phewa Lake, World Peace Pagoda, Davis Falls, Gupteshwor Cave, and the International Mountain Museum before drop-off in the evening."
+      }
+    ],
+    "maxGroupSize": 4,
+    "bestSeason": [
+      "Autumn",
+      "Spring",
+      "Winter"
+    ],
+    "rating": 4.8
+  },
+  {
+    "_id": "pkg_3",
+    "name": "Kathmandu City Explorer",
+    "shortDescription": "A full-day guided car tour through Kathmandu's UNESCO World Heritage sites.",
+    "description": "Discover the cultural heart of Nepal with a private car tour of Kathmandu Valley's most iconic UNESCO World Heritage Sites, including Kathmandu Durbar Square, the Boudhanath Stupa, Pashupatinath Temple, and Swayambhunath (Monkey Temple). Ideal for visitors with a stopover in Kathmandu or looking to explore the capital in a single day.",
+    "duration": 1,
+    "price": 6500,
+    "image": "https://images.unsplash.com/photo-1582578598191-c12185749f06?auto=format&fit=crop&w=1200&q=80",
+    "location": "Kathmandu Valley",
+    "difficulty": "Sedan (Hyundai Creta)",
+    "highlights": [
+      "Kathmandu Durbar Square, a UNESCO World Heritage Site",
+      "Boudhanath Stupa, one of the largest stupas in the world",
+      "Pashupatinath Temple, the holiest Hindu shrine in Nepal",
+      "Swayambhunath Stupa (Monkey Temple) with panoramic valley views",
+      "Knowledgeable driver familiar with the valley's history"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Kathmandu Valley Heritage Tour",
+        "description": "Pickup from your hotel, visit Swayambhunath, Kathmandu Durbar Square, Pashupatinath Temple, and Boudhanath Stupa, with stops for lunch and shopping in Thamel before drop-off."
+      }
+    ],
+    "maxGroupSize": 4,
+    "bestSeason": [
+      "Autumn",
+      "Spring",
+      "Winter"
+    ],
+    "rating": 4.7
+  },
+  {
+    "_id": "pkg_4",
+    "name": "Chitwan Tour",
+    "shortDescription": "A 2 Days 1 Night jungle safari getaway to Chitwan National Park.",
+    "description": "Escape to the subtropical lowlands of Chitwan National Park, a UNESCO World Heritage Site and one of Asia's best wildlife destinations. Travel by private jeep from Pokhara, enjoy jungle activities like canoeing, jungle walks, and wildlife spotting (one-horned rhinos, deer, and if lucky, Bengal tigers), and experience Tharu village culture.",
+    "duration": 2,
+    "price": 13500,
+    "image": "https://images.unsplash.com/photo-1581888227599-779811939961?auto=format&fit=crop&w=1200&q=80",
+    "location": "Chitwan National Park",
+    "difficulty": "Both Available",
+    "highlights": [
+      "Jungle safari in search of one-horned rhinos and wildlife",
+      "Canoe ride on the Rapti River",
+      "Guided jungle walk with a naturalist",
+      "Tharu village and cultural stick dance show",
+      "Comfortable resort stay with meals included"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Pokhara to Chitwan",
+        "description": "Morning departure from Pokhara, arrive in Chitwan by midday, check in to your resort. Afternoon canoe ride and guided jungle walk followed by a Tharu cultural show in the evening."
+      },
+      {
+        "day": 2,
+        "title": "Jungle Safari & Return to Pokhara",
+        "description": "Early morning jeep or elephant-back jungle safari to spot wildlife. After breakfast, drive back to Pokhara, arriving by evening."
+      }
+    ],
+    "maxGroupSize": 7,
+    "bestSeason": [
+      "Autumn",
+      "Winter",
+      "Spring"
+    ],
+    "rating": 4.8
+  }
+]
