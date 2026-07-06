@@ -2,11 +2,32 @@ import mongoose from 'mongoose';
 import { getModelProxy } from './modelProxy.js';
 
 const inquirySchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  phone: { type: String },
-  subject: { type: String, required: true },
-  message: { type: String, required: true },
+  name: { 
+    type: String, 
+    required: true,
+    trim: true 
+  },
+  email: { 
+    type: String, 
+    required: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address']
+  },
+  phone: { 
+    type: String,
+    trim: true 
+  },
+  subject: { 
+    type: String, 
+    required: true,
+    trim: true 
+  },
+  message: { 
+    type: String, 
+    required: true,
+    trim: true 
+  },
   status: { 
     type: String, 
     enum: ['unread', 'read', 'replied'], 
