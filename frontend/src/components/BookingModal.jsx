@@ -4,8 +4,6 @@ import { X, Users, Award, Clock, MapPin, CheckCircle, Leaf, Car, Navigation, Cal
 
 const VEHICLE_OPTIONS = ['Sedan', 'SUV', 'Jeep', 'Hiace', 'Luxury Vehicle'];
 
-// Maps legacy/free-text vehicle labels coming from tour packages (e.g. "Jeep (Mahindra Scorpio)")
-// to one of the standard VEHICLE_OPTIONS so the select box can pre-fill sensibly.
 const normalizeVehicleType = (label) => {
   if (!label) return '';
   const lower = label.toLowerCase();
@@ -17,7 +15,7 @@ const normalizeVehicleType = (label) => {
   return '';
 };
 
-const BookingModal = ({ pkg, isOpen, onClose }) => {
+export default function BookingModal({ pkg, isOpen, onClose }) {
   const emptyForm = {
     pickupLocation: '',
     destination: '',
@@ -36,7 +34,6 @@ const BookingModal = ({ pkg, isOpen, onClose }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Pre-fill sensible defaults whenever a new package/vehicle/destination is opened
   useEffect(() => {
     if (pkg) {
       setFormData({
@@ -48,7 +45,6 @@ const BookingModal = ({ pkg, isOpen, onClose }) => {
       setIsSuccess(false);
       setErrorMessage('');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pkg]);
 
   if (!pkg) return null;
@@ -97,129 +93,137 @@ const BookingModal = ({ pkg, isOpen, onClose }) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="modal-backdrop" onClick={onClose}>
+        <div 
+          className="fixed inset-0 bg-charcoal-dark/70 z-[9999] flex items-center justify-center p-4 overflow-y-auto cursor-pointer"
+          onClick={onClose}
+        >
           <motion.div 
-            className="modal-container"
             onClick={(e) => e.stopPropagation()}
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
+            transition={{ duration: 0.3 }}
+            className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden cursor-default my-8"
           >
             {/* Header Image */}
-            <div className="modal-header-image">
-              <img src={pkg.image} alt={pkg.name} />
-              <div className="modal-header-overlay">
+            <div className="relative h-64 md:h-80 bg-gray-950 text-white">
+              <img src={pkg.image} alt={pkg.name} className="w-full h-full object-cover opacity-60" />
+              <div className="absolute inset-0 bg-gradient-to-t from-charcoal-dark via-charcoal/40 to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6 text-left">
                 {(pkg.vehicleType || pkg.difficulty) && (
-                  <span className="package-badge">{pkg.vehicleType || pkg.difficulty}</span>
+                  <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">
+                    {pkg.vehicleType || pkg.difficulty}
+                  </span>
                 )}
-                <h2 style={{ fontSize: '2.5rem', marginBottom: '8px', color: '#FFF' }}>{pkg.name}</h2>
-                <div style={{ display: 'flex', gap: '20px', fontSize: '0.95rem', flexWrap: 'wrap' }}>
+                <h2 className="text-2xl md:text-4xl font-extrabold leading-tight text-white mb-2">{pkg.name}</h2>
+                <div className="flex flex-wrap gap-4 text-xs md:text-sm text-gray-200">
                   {pkg.location && (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><MapPin size={16} /> {pkg.location}</span>
+                    <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-primary" /> {pkg.location}</span>
                   )}
                   {pkg.duration && (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Clock size={16} /> {pkg.duration} Day{pkg.duration > 1 ? 's' : ''}</span>
+                    <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-primary" /> {pkg.duration} Day{pkg.duration > 1 ? 's' : ''}</span>
                   )}
                 </div>
               </div>
-              <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
-                <X size={20} />
+              <button 
+                onClick={onClose} 
+                className="absolute top-4 right-4 bg-charcoal-dark/70 hover:bg-charcoal text-white/90 hover:text-white p-2 rounded-full transition-colors focus:outline-none"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Content Body */}
-            <div className="modal-body">
-              <div className="modal-details-grid">
+            <div className="p-6 md:p-8 max-h-[60vh] overflow-y-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
                 
                 {/* Details Column */}
-                <div>
+                <div className="lg:col-span-7 space-y-6">
                   {pkg.description && (
-                    <>
-                      <h3 style={{ fontSize: '1.5rem', marginBottom: '12px', color: 'var(--primary-dark)' }}>About This Ride</h3>
-                      <p style={{ color: 'var(--text-muted)', marginBottom: '24px', fontSize: '0.975rem', lineHeight: '1.7' }}>
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-bold text-charcoal-dark">About This Ride</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed whitespace-pre-line">
                         {pkg.description}
                       </p>
-                    </>
+                    </div>
                   )}
 
                   {pkg.highlights && pkg.highlights.length > 0 && (
-                    <>
-                      <h3 style={{ fontSize: '1.25rem', marginBottom: '12px', color: 'var(--primary-dark)' }}>Highlights</h3>
-                      <ul className="modal-highlights">
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-bold text-charcoal-dark">Highlights</h3>
+                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {pkg.highlights.map((highlight, index) => (
-                          <li key={index}>
-                            <CheckCircle size={18} style={{ color: 'var(--primary)', marginTop: '2px' }} />
-                            <span style={{ color: 'var(--text-dark)', fontSize: '0.95rem' }}>{highlight}</span>
+                          <li key={index} className="flex gap-2 text-sm text-gray-600">
+                            <CheckCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                            <span>{highlight}</span>
                           </li>
                         ))}
                       </ul>
-                    </>
+                    </div>
                   )}
 
                   {pkg.itinerary && pkg.itinerary.length > 0 && (
-                    <>
-                      <h3 style={{ fontSize: '1.25rem', marginBottom: '16px', color: 'var(--primary-dark)' }}>Itinerary</h3>
-                      <div className="itinerary-list">
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-bold text-charcoal-dark">Itinerary</h3>
+                      <div className="space-y-4">
                         {pkg.itinerary.map((day) => (
-                          <div className="itinerary-day-card" key={day.day}>
-                            <div className="itinerary-day-title">Day {day.day}: {day.title}</div>
-                            <div className="itinerary-day-desc">{day.description}</div>
+                          <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-1" key={day.day}>
+                            <h4 className="font-bold text-sm text-charcoal-dark">Day {day.day}: {day.title}</h4>
+                            <p className="text-gray-500 text-xs leading-relaxed">{day.description}</p>
                           </div>
                         ))}
                       </div>
-                    </>
+                    </div>
                   )}
 
                   {!pkg.description && !pkg.itinerary && (
-                    <div className="booking-form-box" style={{ marginBottom: 0 }}>
-                      <h3 style={{ fontSize: '1.25rem', marginBottom: '12px', color: 'var(--primary-dark)' }}>
-                        <Car size={20} style={{ verticalAlign: 'middle', marginRight: '8px', color: 'var(--primary)' }} />
-                        24/7 Ride Booking
+                    <div className="p-6 bg-primary-light/50 border border-primary/20 rounded-xl space-y-2">
+                      <h3 className="text-lg font-bold text-charcoal-dark flex items-center gap-1.5">
+                        <Car className="text-primary w-5 h-5" /> 24/7 Ride Booking
                       </h3>
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.7' }}>
-                        Fill in your pickup and destination details and our booking team will confirm your driver and vehicle shortly.
-                        For urgent same-day rides, feel free to call our hotline directly.
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        Fill in your pickup and destination details and our booking team will confirm your driver and vehicle shortly. For urgent same-day rides, feel free to call our hotline directly.
                       </p>
                     </div>
                   )}
                 </div>
 
                 {/* Booking / Specs Column */}
-                <div>
-                  {/* Quick Specs (only shown for tour packages that have this data) */}
+                <div className="lg:col-span-5 space-y-6">
+                  {/* Quick Specs */}
                   {(pkg.duration || pkg.maxGroupSize || pkg.price || pkg.bestSeason) && (
-                    <div className="booking-form-box" style={{ marginBottom: '24px' }}>
-                      <h3 style={{ fontSize: '1.25rem', marginBottom: '16px', color: 'var(--primary-dark)' }}>Ride Details</h3>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div className="bg-gray-50 border border-gray-100 p-6 rounded-2xl space-y-4">
+                      <h3 className="text-base font-bold text-charcoal-dark border-b pb-2 uppercase tracking-wider">Ride Details</h3>
+                      <div className="space-y-3 text-sm">
                         {pkg.duration && (
-                          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '8px' }}>
-                            <span style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}><Clock size={16} /> Duration</span>
-                            <span style={{ fontWeight: 600 }}>{pkg.duration} Day{pkg.duration > 1 ? 's' : ''}</span>
+                          <div className="flex justify-between border-b pb-2">
+                            <span className="text-gray-400 flex items-center gap-1.5"><Clock className="w-4 h-4 text-primary" /> Duration</span>
+                            <span className="font-bold text-charcoal-dark">{pkg.duration} Day{pkg.duration > 1 ? 's' : ''}</span>
                           </div>
                         )}
                         {(pkg.vehicleType || pkg.difficulty) && (
-                          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '8px' }}>
-                            <span style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}><Award size={16} /> Recommended Vehicle</span>
-                            <span style={{ fontWeight: 600, color: 'var(--primary)' }}>{pkg.vehicleType || pkg.difficulty}</span>
+                          <div className="flex justify-between border-b pb-2">
+                            <span className="text-gray-400 flex items-center gap-1.5"><Award className="w-4 h-4 text-primary" /> recommended vehicle</span>
+                            <span className="font-bold text-primary">{pkg.vehicleType || pkg.difficulty}</span>
                           </div>
                         )}
                         {pkg.maxGroupSize && (
-                          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '8px' }}>
-                            <span style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}><Users size={16} /> Max Passengers</span>
-                            <span style={{ fontWeight: 600 }}>{pkg.maxGroupSize} People</span>
+                          <div className="flex justify-between border-b pb-2">
+                            <span className="text-gray-400 flex items-center gap-1.5"><Users className="w-4 h-4 text-primary" /> Max Passengers</span>
+                            <span className="font-bold text-charcoal-dark">{pkg.maxGroupSize} People</span>
                           </div>
                         )}
                         {pkg.bestSeason && (
-                          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '8px' }}>
-                            <span style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}><Leaf size={16} /> Best Time to Visit</span>
-                            <span style={{ fontWeight: 600 }}>{pkg.bestSeason.join(', ')}</span>
+                          <div className="flex justify-between border-b pb-2">
+                            <span className="text-gray-400 flex items-center gap-1.5"><Leaf className="w-4 h-4 text-primary" /> Best Season</span>
+                            <span className="font-bold text-charcoal-dark text-xs">{pkg.bestSeason.join(', ')}</span>
                           </div>
                         )}
                         {pkg.price && (
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px' }}>
-                            <span style={{ fontSize: '1.1rem', fontWeight: 600 }}>Starting Price</span>
-                            <span style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--primary)' }}>Rs. {pkg.price}</span>
+                          <div className="flex justify-between items-center pt-2">
+                            <span className="font-bold text-charcoal-dark text-base">Starting Price</span>
+                            <span className="font-extrabold text-2xl text-primary">Rs. {pkg.price}</span>
                           </div>
                         )}
                       </div>
@@ -227,69 +231,72 @@ const BookingModal = ({ pkg, isOpen, onClose }) => {
                   )}
 
                   {/* Booking Form Box */}
-                  <div className="booking-form-box">
-                    <h3 style={{ fontSize: '1.25rem', marginBottom: '16px', color: 'var(--primary-dark)' }}>Reserve Your Ride</h3>
+                  <div className="bg-white border border-gray-150 p-6 rounded-2xl shadow-sm">
+                    <h3 className="text-base font-bold text-charcoal-dark mb-4 border-b pb-2 uppercase tracking-wider">Reserve Your Ride</h3>
                     
                     {isSuccess ? (
-                      <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                        <CheckCircle size={56} style={{ color: 'var(--primary)', marginBottom: '16px' }} />
-                        <h4 style={{ fontSize: '1.15rem', color: 'var(--primary-dark)', marginBottom: '8px' }}>Booking Request Received!</h4>
-                        <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>We will review details and confirm your ride via call or email shortly. For urgent same-day bookings, please call our hotline directly.</p>
-                        <button className="btn btn-primary" style={{ marginTop: '20px', width: '100%' }} onClick={() => setIsSuccess(false)}>
+                      <div className="text-center py-6 space-y-4">
+                        <CheckCircle className="w-12 h-12 text-primary mx-auto" />
+                        <h4 className="font-bold text-charcoal-dark text-sm">Booking Request Received!</h4>
+                        <p className="text-gray-500 text-xs leading-relaxed">We will review details and confirm your ride via call or email shortly. For urgent same-day bookings, please call our hotline directly.</p>
+                        <button className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-2.5 rounded-lg text-sm transition-colors" onClick={() => setIsSuccess(false)}>
                           Book Another Ride
                         </button>
                       </div>
                     ) : (
-                      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-
-                        <div className="form-group" style={{ marginBottom: 0 }}>
-                          <label className="form-label" htmlFor="pickupLocation"><Navigation size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Pickup Location</label>
+                      <form onSubmit={handleSubmit} className="space-y-4 text-left">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                            <Navigation className="w-3.5 h-3.5 text-primary" /> Pickup Location
+                          </label>
                           <input 
                             type="text" 
-                            id="pickupLocation"
                             name="pickupLocation" 
-                            className="form-control" 
-                            placeholder="e.g. Lakeside, Pokhara or Tribhuvan Airport"
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" 
+                            placeholder="e.g. Lakeside, Pokhara"
                             required 
                             value={formData.pickupLocation}
                             onChange={handleChange}
                           />
                         </div>
 
-                        <div className="form-group" style={{ marginBottom: 0 }}>
-                          <label className="form-label" htmlFor="destination"><MapPin size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Destination</label>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                            <MapPin className="w-3.5 h-3.5 text-primary" /> Destination
+                          </label>
                           <input 
                             type="text" 
-                            id="destination"
                             name="destination" 
-                            className="form-control" 
-                            placeholder="e.g. Kathmandu, Chitwan, Muktinath"
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" 
+                            placeholder="e.g. Kathmandu, Chitwan"
                             required 
                             value={formData.destination}
                             onChange={handleChange}
                           />
                         </div>
 
-                        <div className="form-group-row">
-                          <div className="form-group" style={{ marginBottom: 0 }}>
-                            <label className="form-label" htmlFor="date"><CalendarDays size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Pickup Date</label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                              <CalendarDays className="w-3.5 h-3.5 text-primary" /> Date
+                            </label>
                             <input 
                               type="date" 
-                              id="date"
                               name="date" 
-                              className="form-control" 
+                              className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary" 
                               required 
                               value={formData.date}
                               onChange={handleChange}
                             />
                           </div>
-                          <div className="form-group" style={{ marginBottom: 0 }}>
-                            <label className="form-label" htmlFor="pickupTime">Pickup Time</label>
+                          <div>
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                              <Clock className="w-3.5 h-3.5 text-primary" /> Time
+                            </label>
                             <input 
                               type="time" 
-                              id="pickupTime"
                               name="pickupTime" 
-                              className="form-control" 
+                              className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary" 
                               required 
                               value={formData.pickupTime}
                               onChange={handleChange}
@@ -297,30 +304,28 @@ const BookingModal = ({ pkg, isOpen, onClose }) => {
                           </div>
                         </div>
 
-                        <div className="form-group-row">
-                          <div className="form-group" style={{ marginBottom: 0 }}>
-                            <label className="form-label" htmlFor="vehicleType">Vehicle Type</label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Vehicle Type</label>
                             <select
-                              id="vehicleType"
                               name="vehicleType"
-                              className="form-control"
+                              className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-white"
                               required
                               value={formData.vehicleType}
                               onChange={handleChange}
                             >
-                              <option value="" disabled>Select a vehicle</option>
+                              <option value="" disabled>Select vehicle</option>
                               {VEHICLE_OPTIONS.map(v => (
                                 <option key={v} value={v}>{v}</option>
                               ))}
                             </select>
                           </div>
-                          <div className="form-group" style={{ marginBottom: 0 }}>
-                            <label className="form-label" htmlFor="passengers">Passengers</label>
+                          <div>
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Passengers</label>
                             <input 
                               type="number" 
-                              id="passengers"
                               name="passengers" 
-                              className="form-control" 
+                              className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary" 
                               min="1" 
                               max={pkg.maxGroupSize || 20}
                               required 
@@ -330,39 +335,36 @@ const BookingModal = ({ pkg, isOpen, onClose }) => {
                           </div>
                         </div>
 
-                        <div className="form-group" style={{ marginBottom: 0 }}>
-                          <label className="form-label" htmlFor="customerName">Full Name</label>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Full Name</label>
                           <input 
                             type="text" 
-                            id="customerName"
                             name="customerName" 
-                            className="form-control" 
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary" 
                             required 
                             value={formData.customerName}
                             onChange={handleChange}
                           />
                         </div>
 
-                        <div className="form-group-row">
-                          <div className="form-group" style={{ marginBottom: 0 }}>
-                            <label className="form-label" htmlFor="phone">Phone Number</label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Phone</label>
                             <input 
                               type="tel" 
-                              id="phone"
                               name="phone" 
-                              className="form-control" 
+                              className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary" 
                               required 
                               value={formData.phone}
                               onChange={handleChange}
                             />
                           </div>
-                          <div className="form-group" style={{ marginBottom: 0 }}>
-                            <label className="form-label" htmlFor="email">Email Address</label>
+                          <div>
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Email</label>
                             <input 
                               type="email" 
-                              id="email"
                               name="email" 
-                              className="form-control" 
+                              className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary" 
                               required 
                               value={formData.email}
                               onChange={handleChange}
@@ -370,29 +372,26 @@ const BookingModal = ({ pkg, isOpen, onClose }) => {
                           </div>
                         </div>
 
-                        <div className="form-group" style={{ marginBottom: 0 }}>
-                          <label className="form-label" htmlFor="message">Special Requests</label>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Special Requests</label>
                           <textarea 
-                            id="message"
                             name="message" 
-                            className="form-control" 
-                            style={{ minHeight: '80px' }}
-                            placeholder="Child seat, extra luggage space, wheelchair access, etc."
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary min-h-[60px]" 
+                            placeholder="Child seat, extra luggage space, etc."
                             value={formData.message}
                             onChange={handleChange}
                           />
                         </div>
 
                         {errorMessage && (
-                          <div style={{ color: '#DC2626', fontSize: '0.85rem', fontWeight: 500 }}>
+                          <div className="text-red-600 text-xs font-semibold">
                             {errorMessage}
                           </div>
                         )}
 
                         <button 
                           type="submit" 
-                          className="btn btn-primary" 
-                          style={{ width: '100%' }}
+                          className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-2.5 rounded-lg text-xs shadow-md transition-colors"
                           disabled={isSubmitting}
                         >
                           {isSubmitting ? 'Sending Request...' : 'Confirm Booking'}
@@ -409,6 +408,4 @@ const BookingModal = ({ pkg, isOpen, onClose }) => {
       )}
     </AnimatePresence>
   );
-};
-
-export default BookingModal;
+}

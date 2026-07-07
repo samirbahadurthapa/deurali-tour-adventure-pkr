@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Calendar, MessageSquare, Map, Image, Plus, Trash2, Check, X, Edit, Eye, 
-  MapPin, Clock, DollarSign, ArrowLeft, ShieldAlert, Car, Users, Luggage
+  MapPin, Clock, DollarSign, ArrowLeft, ShieldAlert, Car, Users, Luggage, LogOut
 } from 'lucide-react';
 import { authFetch, clearAdminToken } from '../utils/api.js';
 
-const AdminDashboard = ({ setAdminMode }) => {
+export default function AdminDashboard({ handleLogout }) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('bookings');
   
   // Lists
@@ -193,10 +195,9 @@ const AdminDashboard = ({ setAdminMode }) => {
       maxGroupSize: Number(pkgForm.maxGroupSize),
       highlights: pkgForm.highlights.split(',').map(h => h.trim()).filter(Boolean),
       bestSeason: pkgForm.bestSeason.split(',').map(s => s.trim()).filter(Boolean),
-      // Dummy itinerary for newly created package
       itinerary: [
-        { day: 1, title: 'Pickup & Departure', description: 'Pickup from your hotel in Kathmandu/Pokhara, brief on the route, and departure with your driver.' },
-        { day: 2, title: 'Sightseeing & Return', description: 'Continue the tour with scenic stops and sightseeing, then return to your hotel.' }
+        { day: 1, title: 'Pickup & Departure', description: 'Pickup from your hotel, route orientation, and departure with driver.' },
+        { day: 2, title: 'Sightseeing & Dropoff', description: 'Sightseeing at key locations, return, and drop off at your hotel.' }
       ]
     };
 
@@ -351,139 +352,143 @@ const AdminDashboard = ({ setAdminMode }) => {
     }
   };
 
+  const menuItems = [
+    { id: 'bookings', label: 'Bookings', icon: <Calendar className="w-4 h-4" /> },
+    { id: 'inquiries', label: 'Inquiries', icon: <MessageSquare className="w-4 h-4" /> },
+    { id: 'packages', label: 'Tour Packages', icon: <Map className="w-4 h-4" /> },
+    { id: 'vehicles', label: 'Our Fleet', icon: <Car className="w-4 h-4" /> },
+    { id: 'gallery', label: 'Gallery', icon: <Image className="w-4 h-4" /> },
+  ];
+
   return (
-    <div className="admin-layout">
+    <div className="min-h-screen flex bg-gray-100 text-left">
       {/* Sidebar */}
-      <aside className="admin-sidebar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0 20px 24px 20px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-          <ShieldAlert style={{ color: 'var(--secondary)' }} />
-          <h3 style={{ fontSize: '1.25rem', color: '#FFF' }}>Portal Admin</h3>
+      <aside className="w-64 bg-charcoal text-white flex flex-col justify-between p-6 shrink-0 shadow-lg">
+        <div className="space-y-6">
+          <div className="flex items-center gap-2 border-b border-gray-700 pb-4">
+            <ShieldAlert className="text-primary w-6 h-6" />
+            <h3 className="font-extrabold text-lg tracking-wider">DEURALI ADMIN</h3>
+          </div>
+
+          <nav className="space-y-1">
+            {menuItems.map(item => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-all ${
+                  activeTab === item.id 
+                    ? 'bg-primary text-white shadow-md' 
+                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </nav>
         </div>
 
-        <button 
-          className={`admin-sidebar-btn ${activeTab === 'bookings' ? 'active' : ''}`}
-          onClick={() => setActiveTab('bookings')}
-        >
-          <Calendar size={18} /> Bookings
-        </button>
-
-        <button 
-          className={`admin-sidebar-btn ${activeTab === 'inquiries' ? 'active' : ''}`}
-          onClick={() => setActiveTab('inquiries')}
-        >
-          <MessageSquare size={18} /> Inquiries
-        </button>
-
-        <button 
-          className={`admin-sidebar-btn ${activeTab === 'packages' ? 'active' : ''}`}
-          onClick={() => setActiveTab('packages')}
-        >
-          <Map size={18} /> Tour Packages
-        </button>
-
-        <button 
-          className={`admin-sidebar-btn ${activeTab === 'vehicles' ? 'active' : ''}`}
-          onClick={() => setActiveTab('vehicles')}
-        >
-          <Car size={18} /> Our Fleet
-        </button>
-
-        <button 
-          className={`admin-sidebar-btn ${activeTab === 'gallery' ? 'active' : ''}`}
-          onClick={() => setActiveTab('gallery')}
-        >
-          <Image size={18} /> Gallery
-        </button>
-
-        <div style={{ marginTop: 'auto', padding: '0 20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <button 
-            className="btn btn-secondary" 
-            style={{ width: '100%', fontSize: '0.9rem', padding: '10px 0' }}
-            onClick={() => { clearAdminToken(); window.location.reload(); }}
+        <div className="space-y-3 pt-6 border-t border-gray-700">
+          <button
+            onClick={() => navigate('/')}
+            className="w-full flex items-center justify-center gap-2 border border-gray-600 hover:border-white text-gray-300 hover:text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-all"
           >
-            Log Out
+            <ArrowLeft className="w-4 h-4" /> Back to Website
           </button>
-          <button 
-            className="btn btn-outline-white" 
-            style={{ width: '100%', fontSize: '0.9rem', padding: '10px 0' }}
-            onClick={() => setAdminMode(false)}
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 bg-red-650 hover:bg-red-700 text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-all shadow-sm"
           >
-            <ArrowLeft size={16} /> Back to Site
+            <LogOut className="w-4 h-4" /> Log Out
           </button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="admin-content">
+      {/* Main Panel */}
+      <main className="flex-grow p-8 overflow-y-auto">
         {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-            <span style={{ fontSize: '1.2rem', color: 'var(--primary)' }}>Loading dashboard details...</span>
+          <div className="h-[60vh] flex items-center justify-center text-primary font-bold text-lg">
+            Loading dashboard data...
           </div>
         ) : (
-          <>
+          <div className="space-y-6">
+            
             {/* BOOKINGS TAB */}
             {activeTab === 'bookings' && (
-              <div>
-                <h2 style={{ fontSize: '2rem', marginBottom: '24px', color: 'var(--primary-dark)' }}>Bookings Log</h2>
-                <div className="admin-table-container">
-                  <table className="admin-table">
+              <div className="space-y-6">
+                <h2 className="text-2xl font-extrabold text-charcoal-dark">Bookings Log</h2>
+                
+                <div className="bg-white rounded-xl shadow-sm border border-gray-150 overflow-hidden">
+                  <table className="w-full border-collapse text-sm">
                     <thead>
-                      <tr>
-                        <th>Customer</th>
-                        <th>Package / Ride</th>
-                        <th>Pickup → Destination</th>
-                        <th>Date &amp; Time</th>
-                        <th>Vehicle</th>
-                        <th>Passengers</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                      <tr className="bg-gray-50 border-b border-gray-150 text-gray-500 font-bold uppercase tracking-wider text-xs">
+                        <th className="p-4">Customer</th>
+                        <th className="p-4">Package / Ride</th>
+                        <th className="p-4">Route</th>
+                        <th className="p-4">Date &amp; Time</th>
+                        <th className="p-4">Vehicle</th>
+                        <th className="p-4">Passengers</th>
+                        <th className="p-4">Status</th>
+                        <th className="p-4 text-center">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-gray-100">
                       {bookings.length === 0 ? (
-                        <tr><td colSpan="8" style={{ textAlign: 'center', padding: '24px' }}>No bookings logged.</td></tr>
+                        <tr>
+                          <td colSpan="8" className="p-8 text-center text-gray-400">No bookings logged yet.</td>
+                        </tr>
                       ) : (
                         bookings.map(b => (
-                          <tr key={b._id}>
-                            <td>
-                              <strong>{b.customerName}</strong>
-                              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{b.email} | {b.phone}</div>
+                          <tr key={b._id} className="hover:bg-gray-50/50 transition-colors">
+                            <td className="p-4">
+                              <div className="font-bold text-charcoal-dark">{b.customerName}</div>
+                              <div className="text-xs text-gray-400">{b.email} | {b.phone}</div>
                             </td>
-                            <td>{b.packageName}</td>
-                            <td style={{ fontSize: '0.85rem' }}>{b.pickupLocation} → {b.destination}</td>
-                            <td>{new Date(b.date).toLocaleDateString()}{b.pickupTime ? ` at ${b.pickupTime}` : ''}</td>
-                            <td>{b.vehicleType}</td>
-                            <td>{b.passengers}</td>
-                            <td>
-                              <span className={`status-badge status-${b.status}`}>{b.status}</span>
+                            <td className="p-4 font-medium text-gray-600">{b.packageName}</td>
+                            <td className="p-4 text-xs text-gray-500">{b.pickupLocation} → {b.destination}</td>
+                            <td className="p-4 text-gray-500">
+                              <div>{new Date(b.date).toLocaleDateString()}</div>
+                              {b.pickupTime && <div className="text-xs text-gray-400">at {b.pickupTime}</div>}
                             </td>
-                            <td>
-                              <div className="action-btn-group">
+                            <td className="p-4 text-gray-500 font-medium">{b.vehicleType}</td>
+                            <td className="p-4 text-gray-500 text-center">{b.passengers}</td>
+                            <td className="p-4">
+                              <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
+                                b.status === 'confirmed' 
+                                  ? 'bg-green-50 border-green-200 text-green-700' 
+                                  : b.status === 'cancelled' 
+                                  ? 'bg-red-50 border-red-200 text-red-700' 
+                                  : 'bg-yellow-50 border-yellow-250 text-yellow-700'
+                              }`}>
+                                {b.status}
+                              </span>
+                            </td>
+                            <td className="p-4">
+                              <div className="flex justify-center gap-1.5">
                                 {b.status !== 'confirmed' && (
                                   <button 
-                                    className="icon-btn icon-btn-confirm" 
+                                    className="p-1.5 bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 rounded-lg transition-colors" 
                                     title="Confirm"
                                     onClick={() => updateBookingStatus(b._id, 'confirmed')}
                                   >
-                                    <Check size={16} />
+                                    <Check className="w-4 h-4" />
                                   </button>
                                 )}
                                 {b.status !== 'cancelled' && (
                                   <button 
-                                    className="icon-btn icon-btn-delete" 
+                                    className="p-1.5 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded-lg transition-colors" 
                                     title="Cancel"
                                     onClick={() => updateBookingStatus(b._id, 'cancelled')}
                                   >
-                                    <X size={16} />
+                                    <X className="w-4 h-4" />
                                   </button>
                                 )}
                                 <button 
-                                  className="icon-btn" 
-                                  style={{ backgroundColor: '#E2E8F0', color: '#475569' }}
+                                  className="p-1.5 bg-gray-50 hover:bg-gray-150 border border-gray-200 text-gray-500 rounded-lg transition-colors" 
                                   title="Delete Record"
                                   onClick={() => deleteBooking(b._id)}
                                 >
-                                  <Trash2 size={14} />
+                                  <Trash2 className="w-4 h-4" />
                                 </button>
                               </div>
                             </td>
@@ -498,60 +503,71 @@ const AdminDashboard = ({ setAdminMode }) => {
 
             {/* INQUIRIES TAB */}
             {activeTab === 'inquiries' && (
-              <div>
-                <h2 style={{ fontSize: '2rem', marginBottom: '24px', color: 'var(--primary-dark)' }}>Inquiries & Feedback</h2>
-                <div className="admin-table-container">
-                  <table className="admin-table">
+              <div className="space-y-6">
+                <h2 className="text-2xl font-extrabold text-charcoal-dark">Inquiries & Feedback</h2>
+
+                <div className="bg-white rounded-xl shadow-sm border border-gray-150 overflow-hidden">
+                  <table className="w-full border-collapse text-sm">
                     <thead>
-                      <tr>
-                        <th>From</th>
-                        <th>Subject</th>
-                        <th>Message</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                      <tr className="bg-gray-50 border-b border-gray-150 text-gray-500 font-bold uppercase tracking-wider text-xs">
+                        <th className="p-4">From</th>
+                        <th className="p-4">Subject</th>
+                        <th className="p-4">Message</th>
+                        <th className="p-4">Status</th>
+                        <th className="p-4 text-center">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-gray-100">
                       {inquiries.length === 0 ? (
-                        <tr><td colSpan="5" style={{ textAlign: 'center', padding: '24px' }}>No inquiries received yet.</td></tr>
+                        <tr>
+                          <td colSpan="5" className="p-8 text-center text-gray-400">No inquiries received yet.</td>
+                        </tr>
                       ) : (
                         inquiries.map(i => (
-                          <tr key={i._id}>
-                            <td>
-                              <strong>{i.name}</strong>
-                              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{i.email} {i.phone ? `| ${i.phone}` : ''}</div>
+                          <tr key={i._id} className="hover:bg-gray-50/50 transition-colors">
+                            <td className="p-4">
+                              <div className="font-bold text-charcoal-dark">{i.name}</div>
+                              <div className="text-xs text-gray-450">{i.email} {i.phone ? `| ${i.phone}` : ''}</div>
                             </td>
-                            <td style={{ fontWeight: 600 }}>{i.subject}</td>
-                            <td style={{ maxWidth: '300px', fontSize: '0.9rem' }}>{i.message}</td>
-                            <td>
-                              <span className={`status-badge status-${i.status}`}>{i.status}</span>
+                            <td className="p-4 font-bold text-gray-700">{i.subject}</td>
+                            <td className="p-4 text-gray-500 max-w-xs break-words">{i.message}</td>
+                            <td className="p-4">
+                              <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
+                                i.status === 'replied' 
+                                  ? 'bg-green-50 border-green-200 text-green-700' 
+                                  : i.status === 'read' 
+                                  ? 'bg-gray-100 border-gray-200 text-gray-600' 
+                                  : 'bg-yellow-50 border-yellow-250 text-yellow-700'
+                              }`}>
+                                {i.status}
+                              </span>
                             </td>
-                            <td>
-                              <div className="action-btn-group">
+                            <td className="p-4">
+                              <div className="flex justify-center gap-1.5">
                                 {i.status === 'unread' && (
                                   <button 
-                                    className="icon-btn icon-btn-confirm" 
+                                    className="p-1.5 bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 rounded-lg transition-colors" 
                                     title="Mark Read"
                                     onClick={() => updateInquiryStatus(i._id, 'read')}
                                   >
-                                    <Check size={16} />
+                                    <Check className="w-4 h-4" />
                                   </button>
                                 )}
                                 {i.status !== 'replied' && (
                                   <button 
-                                    className="icon-btn icon-btn-edit" 
+                                    className="p-1.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-lg transition-colors" 
                                     title="Mark Replied"
                                     onClick={() => updateInquiryStatus(i._id, 'replied')}
                                   >
-                                    <MessageSquare size={14} />
+                                    <MessageSquare className="w-4 h-4" />
                                   </button>
                                 )}
                                 <button 
-                                  className="icon-btn icon-btn-delete" 
+                                  className="p-1.5 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded-lg transition-colors" 
                                   title="Delete inquiry"
                                   onClick={() => deleteInquiry(i._id)}
                                 >
-                                  <Trash2 size={14} />
+                                  <Trash2 className="w-4 h-4" />
                                 </button>
                               </div>
                             </td>
@@ -566,36 +582,48 @@ const AdminDashboard = ({ setAdminMode }) => {
 
             {/* PACKAGES TAB */}
             {activeTab === 'packages' && (
-              <div>
-                <div className="admin-card-header">
-                  <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)' }}>Manage Packages</h2>
-                  <button className="btn btn-primary" onClick={() => openPkgModal()}>
-                    <Plus size={18} /> Add New Package
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-extrabold text-charcoal-dark">Manage Tour Packages</h2>
+                  <button 
+                    onClick={() => openPkgModal()}
+                    className="bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-lg text-sm font-bold shadow-md transition-colors flex items-center gap-1.5"
+                  >
+                    <Plus className="w-4 h-4" /> Add New Package
                   </button>
                 </div>
 
-                <div className="grid-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {packages.map(p => (
-                    <div className="package-card" key={p._id}>
-                      <div className="package-img-wrapper" style={{ height: '160px' }}>
-                        <img className="package-img" src={p.image} alt={p.name} />
-                        <span className="package-badge">{p.difficulty}</span>
-                        <span className="package-price-badge">Rs. {p.price}</span>
+                    <div className="bg-white border border-gray-150 rounded-xl overflow-hidden shadow-sm flex flex-col justify-between" key={p._id}>
+                      <div className="relative h-44 bg-gray-100">
+                        <img className="w-full h-full object-cover" src={p.image} alt={p.name} />
+                        <span className="absolute top-3 right-3 bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">{p.difficulty}</span>
+                        <span className="absolute bottom-3 left-3 bg-charcoal-dark/90 text-white text-xs font-bold px-2 py-1 rounded">Rs. {p.price}</span>
                       </div>
-                      <div className="package-content" style={{ padding: '16px' }}>
-                        <div style={{ display: 'flex', gap: '12px', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={12} /> {p.location}</span>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={12} /> {p.duration} Days</span>
+                      <div className="p-4 flex-grow flex flex-col justify-between space-y-4">
+                        <div>
+                          <div className="flex gap-3 text-xs text-gray-400 mb-1.5">
+                            <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {p.location}</span>
+                            <span>•</span>
+                            <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {p.duration} Days</span>
+                          </div>
+                          <h4 className="font-bold text-charcoal-dark text-base">{p.name}</h4>
+                          <p className="text-gray-500 text-xs line-clamp-2 mt-1">{p.shortDescription}</p>
                         </div>
-                        <h4 style={{ fontSize: '1.25rem', marginBottom: '8px', color: 'var(--primary-dark)' }}>{p.name}</h4>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '16px', flexGrow: 1 }}>{p.shortDescription}</p>
                         
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '12px' }}>
-                          <button className="icon-btn icon-btn-edit" onClick={() => openPkgModal(p)}>
-                            <Edit size={14} />
+                        <div className="flex justify-end gap-2 border-t pt-3">
+                          <button 
+                            onClick={() => openPkgModal(p)}
+                            className="p-1.5 bg-gray-50 hover:bg-gray-150 border rounded-lg text-gray-500 transition-colors"
+                          >
+                            <Edit className="w-4 h-4" />
                           </button>
-                          <button className="icon-btn icon-btn-delete" onClick={() => deletePackage(p._id)}>
-                            <Trash2 size={14} />
+                          <button 
+                            onClick={() => deletePackage(p._id)}
+                            className="p-1.5 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </div>
@@ -605,130 +633,143 @@ const AdminDashboard = ({ setAdminMode }) => {
               </div>
             )}
 
-            {/* VEHICLES (FLEET) TAB */}
+            {/* VEHICLES TAB */}
             {activeTab === 'vehicles' && (
-              <div>
-                <div className="admin-card-header">
-                  <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)' }}>Manage Fleet</h2>
-                  <button className="btn btn-primary" onClick={() => openVehicleModal()}>
-                    <Plus size={18} /> Add New Vehicle
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-extrabold text-charcoal-dark">Manage Fleet</h2>
+                  <button 
+                    onClick={() => openVehicleModal()}
+                    className="bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-lg text-sm font-bold shadow-md transition-colors flex items-center gap-1.5"
+                  >
+                    <Plus className="w-4 h-4" /> Add New Vehicle
                   </button>
                 </div>
 
-                <div className="grid-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {vehicles.map(v => (
-                    <div className="package-card" key={v._id}>
-                      <div className="package-img-wrapper" style={{ height: '160px' }}>
-                        <img className="package-img" src={v.image} alt={v.name} />
-                        <span className="package-badge">{v.type}</span>
+                    <div className="bg-white border border-gray-150 rounded-xl overflow-hidden shadow-sm flex flex-col justify-between" key={v._id}>
+                      <div className="relative h-44 bg-gray-100">
+                        <img className="w-full h-full object-cover" src={v.image} alt={v.name} />
+                        <span className="absolute top-3 right-3 bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">{v.type}</span>
                       </div>
-                      <div className="package-content" style={{ padding: '16px' }}>
-                        <div style={{ display: 'flex', gap: '12px', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Users size={12} /> {v.seats} Seats</span>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Luggage size={12} /> {v.luggage}</span>
+                      <div className="p-4 flex-grow flex flex-col justify-between space-y-4">
+                        <div>
+                          <div className="flex gap-3 text-xs text-gray-400 mb-1.5">
+                            <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {v.seats} Seats</span>
+                            <span>•</span>
+                            <span className="flex items-center gap-1"><Luggage className="w-3.5 h-3.5" /> {v.luggage}</span>
+                          </div>
+                          <h4 className="font-bold text-charcoal-dark text-base">{v.name}</h4>
+                          <p className="text-gray-500 text-xs mt-1">
+                            {v.driverIncluded ? 'Driver Included' : 'Self-Drive'} · {v.ac ? 'A/C' : 'No A/C'}
+                          </p>
                         </div>
-                        <h4 style={{ fontSize: '1.25rem', marginBottom: '8px', color: 'var(--primary-dark)' }}>{v.name}</h4>
-                        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '16px', flexGrow: 1 }}>
-                          {v.driverIncluded ? 'Driver Included' : 'Self-Drive'} · {v.ac ? 'A/C' : 'No A/C'}
-                        </p>
-
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '12px' }}>
-                          <button className="icon-btn icon-btn-edit" onClick={() => openVehicleModal(v)}>
-                            <Edit size={14} />
+                        
+                        <div className="flex justify-end gap-2 border-t pt-3">
+                          <button 
+                            onClick={() => openVehicleModal(v)}
+                            className="p-1.5 bg-gray-50 hover:bg-gray-150 border rounded-lg text-gray-500 transition-colors"
+                          >
+                            <Edit className="w-4 h-4" />
                           </button>
-                          <button className="icon-btn icon-btn-delete" onClick={() => deleteVehicle(v._id)}>
-                            <Trash2 size={14} />
+                          <button 
+                            onClick={() => deleteVehicle(v._id)}
+                            className="p-1.5 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
-
-                {vehicles.length === 0 && (
-                  <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '40px' }}>No vehicles in the fleet yet. Add your first one above.</p>
-                )}
               </div>
             )}
 
             {/* GALLERY TAB */}
             {activeTab === 'gallery' && (
-              <div>
-                <h2 style={{ fontSize: '2rem', marginBottom: '24px', color: 'var(--primary-dark)' }}>Manage Gallery</h2>
+              <div className="space-y-6">
+                <h2 className="text-2xl font-extrabold text-charcoal-dark">Manage Gallery</h2>
                 
-                {/* Add Photo Form */}
-                <div className="booking-form-box" style={{ marginBottom: '32px', maxWidth: '800px' }}>
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: '16px', color: 'var(--primary-dark)' }}>Add Image to Portfolio</h3>
-                  <form onSubmit={handleGallerySubmit} className="form-group-row">
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Photo URL</label>
+                {/* Upload Form Box */}
+                <div className="bg-white border border-gray-150 rounded-xl p-6 shadow-sm max-w-3xl">
+                  <h3 className="font-bold text-charcoal-dark text-base mb-4 border-b pb-2 uppercase tracking-wider">Add Image to Portfolio</h3>
+                  <form onSubmit={handleGallerySubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Photo URL</label>
                         <input 
                           type="url" 
-                          className="form-control" 
                           placeholder="https://unsplash.com/..." 
                           required
                           value={galleryForm.url}
                           onChange={(e) => setGalleryForm({...galleryForm, url: e.target.value})}
+                          className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </div>
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Title / Caption</label>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Title / Caption</label>
                         <input 
                           type="text" 
-                          className="form-control" 
-                          placeholder="e.g. Sunrise Drive to Sarangkot" 
+                          placeholder="Sunrise drive to Sarangkot" 
                           required
                           value={galleryForm.title}
                           onChange={(e) => setGalleryForm({...galleryForm, title: e.target.value})}
+                          className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Category</label>
-                        <select 
-                          className="form-control"
-                          value={galleryForm.category}
-                          onChange={(e) => setGalleryForm({...galleryForm, category: e.target.value})}
-                        >
-                          <option value="sightseeing">Sightseeing</option>
-                          <option value="culture">Culture</option>
-                          <option value="nature">Nature / Landscapes</option>
-                          <option value="adventure">Adventure / Mountain Roads</option>
-                          <option value="wildlife">Wildlife</option>
-                        </select>
+                    <div className="space-y-3 flex flex-col justify-between">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Category</label>
+                          <select 
+                            value={galleryForm.category}
+                            onChange={(e) => setGalleryForm({...galleryForm, category: e.target.value})}
+                            className="w-full px-2 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-white"
+                          >
+                            <option value="sightseeing">Sightseeing</option>
+                            <option value="culture">Culture</option>
+                            <option value="nature">Nature / Landscapes</option>
+                            <option value="adventure">Adventure</option>
+                            <option value="wildlife">Wildlife</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Location</label>
+                          <input 
+                            type="text" 
+                            placeholder="e.g. Pokhara" 
+                            required
+                            value={galleryForm.location}
+                            onChange={(e) => setGalleryForm({...galleryForm, location: e.target.value})}
+                            className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                          />
+                        </div>
                       </div>
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Location</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          placeholder="e.g. Pokhara" 
-                          required
-                          value={galleryForm.location}
-                          onChange={(e) => setGalleryForm({...galleryForm, location: e.target.value})}
-                        />
-                      </div>
-                      <button type="submit" className="btn btn-primary" style={{ marginTop: 'auto', padding: '12px 0' }}>
-                        <Plus size={16} /> Upload Photo
+                      <button 
+                        type="submit" 
+                        className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-2.5 rounded-lg text-xs transition-colors flex justify-center items-center gap-1.5"
+                      >
+                        <Plus className="w-4 h-4" /> Upload Photo
                       </button>
                     </div>
                   </form>
                 </div>
 
                 {/* Gallery List */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                   {gallery.map(img => (
-                    <div key={img._id} style={{ position: 'relative', borderRadius: 'var(--radius-sm)', overflow: 'hidden', height: '150px', boxShadow: 'var(--shadow-sm)' }}>
-                      <img src={img.url} alt={img.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', opacity: 0, transition: '0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onMouseEnter={(e) => e.currentTarget.style.opacity = 1} onMouseLeave={(e) => e.currentTarget.style.opacity = 0}>
+                    <div key={img._id} className="relative rounded-xl overflow-hidden h-36 bg-gray-150 group shadow-sm">
+                      <img src={img.url} alt={img.title} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-charcoal/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <button 
                           onClick={() => deleteGalleryItem(img._id)}
-                          style={{ background: 'var(--accent-orange)', color: '#FFF', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                          className="bg-red-650 hover:bg-red-700 text-white p-2 rounded-full shadow transition-all"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -739,85 +780,85 @@ const AdminDashboard = ({ setAdminMode }) => {
 
             {/* PACKAGE CREATE/EDIT FORM MODAL */}
             {pkgModalOpen && (
-              <div className="admin-modal">
-                <div className="admin-modal-box">
-                  <h3 style={{ fontSize: '1.5rem', marginBottom: '20px', color: 'var(--primary-dark)' }}>
-                    {editingPkg ? 'Edit Package' : 'Create Package'}
+              <div className="fixed inset-0 bg-charcoal-dark/70 z-[9999] flex items-center justify-center p-4">
+                <div className="bg-white rounded-xl shadow-2xl overflow-hidden w-full max-w-2xl p-6 text-left max-h-[85vh] overflow-y-auto">
+                  <h3 className="font-extrabold text-charcoal-dark text-lg border-b pb-2 mb-4">
+                    {editingPkg ? 'Edit Tour Package' : 'Create Tour Package'}
                   </h3>
-                  <form onSubmit={handlePkgSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Package Name</label>
+                  
+                  <form onSubmit={handlePkgSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Package Name</label>
                       <input 
                         type="text" 
-                        className="form-control" 
                         required 
                         value={pkgForm.name} 
                         onChange={(e) => setPkgForm({...pkgForm, name: e.target.value})} 
+                        className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
 
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Short Description (for cards)</label>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Short Description (for cards)</label>
                       <input 
                         type="text" 
-                        className="form-control" 
                         required 
                         value={pkgForm.shortDescription} 
                         onChange={(e) => setPkgForm({...pkgForm, shortDescription: e.target.value})} 
+                        className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
 
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Full Description</label>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Full Description</label>
                       <textarea 
-                        className="form-control" 
                         required 
                         value={pkgForm.description} 
                         onChange={(e) => setPkgForm({...pkgForm, description: e.target.value})} 
+                        className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary min-h-[80px]"
                       />
                     </div>
 
-                    <div className="form-group-row">
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Duration (Days)</label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Duration (Days)</label>
                         <input 
                           type="number" 
-                          className="form-control" 
                           required 
                           value={pkgForm.duration} 
                           onChange={(e) => setPkgForm({...pkgForm, duration: e.target.value})} 
+                          className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </div>
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Price (NPR)</label>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Price (NPR)</label>
                         <input 
                           type="number" 
-                          className="form-control" 
                           required 
                           value={pkgForm.price} 
                           onChange={(e) => setPkgForm({...pkgForm, price: e.target.value})} 
+                          className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </div>
                     </div>
 
-                    <div className="form-group-row">
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Location Region</label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Location Region</label>
                         <input 
                           type="text" 
-                          className="form-control" 
                           required 
                           value={pkgForm.location} 
                           onChange={(e) => setPkgForm({...pkgForm, location: e.target.value})} 
+                          className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </div>
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Vehicle</label>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Vehicle</label>
                         <select 
-                          className="form-control" 
                           value={pkgForm.difficulty} 
                           onChange={(e) => setPkgForm({...pkgForm, difficulty: e.target.value})}
+                          className="w-full px-2 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-white"
                         >
                           <option value="Sedan (Hyundai Creta)">Sedan (Hyundai Creta)</option>
                           <option value="Jeep (Mahindra Scorpio)">Jeep (Mahindra Scorpio)</option>
@@ -826,55 +867,66 @@ const AdminDashboard = ({ setAdminMode }) => {
                       </div>
                     </div>
 
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Main Image URL</label>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Main Image URL</label>
                       <input 
                         type="url" 
-                        className="form-control" 
                         required 
                         value={pkgForm.image} 
                         onChange={(e) => setPkgForm({...pkgForm, image: e.target.value})} 
+                        className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
 
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Highlights (comma separated)</label>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Highlights (comma separated)</label>
                       <input 
                         type="text" 
-                        className="form-control" 
                         placeholder="Highlight 1, Highlight 2, etc." 
                         required 
                         value={pkgForm.highlights} 
                         onChange={(e) => setPkgForm({...pkgForm, highlights: e.target.value})} 
+                        className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
 
-                    <div className="form-group-row">
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Max Passengers</label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Max Passengers</label>
                         <input 
                           type="number" 
-                          className="form-control" 
                           required 
                           value={pkgForm.maxGroupSize} 
                           onChange={(e) => setPkgForm({...pkgForm, maxGroupSize: e.target.value})} 
+                          className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </div>
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Best Seasons</label>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Best Seasons</label>
                         <input 
                           type="text" 
-                          className="form-control" 
                           required 
                           value={pkgForm.bestSeason} 
                           onChange={(e) => setPkgForm({...pkgForm, bestSeason: e.target.value})} 
+                          className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '16px' }}>
-                      <button type="button" className="btn btn-secondary" onClick={() => setPkgModalOpen(false)}>Cancel</button>
-                      <button type="submit" className="btn btn-primary">Save Package</button>
+                    <div className="flex gap-3 justify-end pt-4 border-t">
+                      <button 
+                        type="button" 
+                        onClick={() => setPkgModalOpen(false)}
+                        className="border border-gray-300 hover:border-charcoal text-gray-600 px-4 py-2 rounded-lg text-xs font-bold transition-all"
+                      >
+                        Cancel
+                      </button>
+                      <button 
+                        type="submit" 
+                        className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow"
+                      >
+                        Save Package
+                      </button>
                     </div>
                   </form>
                 </div>
@@ -883,32 +935,32 @@ const AdminDashboard = ({ setAdminMode }) => {
 
             {/* VEHICLE CREATE/EDIT FORM MODAL */}
             {vehicleModalOpen && (
-              <div className="admin-modal">
-                <div className="admin-modal-box">
-                  <h3 style={{ fontSize: '1.5rem', marginBottom: '20px', color: 'var(--primary-dark)' }}>
+              <div className="fixed inset-0 bg-charcoal-dark/70 z-[9999] flex items-center justify-center p-4">
+                <div className="bg-white rounded-xl shadow-2xl overflow-hidden w-full max-w-2xl p-6 text-left max-h-[85vh] overflow-y-auto">
+                  <h3 className="font-extrabold text-charcoal-dark text-lg border-b pb-2 mb-4">
                     {editingVehicle ? 'Edit Vehicle' : 'Add New Vehicle'}
                   </h3>
-                  <form onSubmit={handleVehicleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Vehicle Name</label>
+                  
+                  <form onSubmit={handleVehicleSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Vehicle Name</label>
                       <input 
                         type="text" 
-                        className="form-control" 
                         placeholder="e.g. Hyundai Creta"
                         required 
                         value={vehicleForm.name} 
                         onChange={(e) => setVehicleForm({...vehicleForm, name: e.target.value})} 
+                        className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
 
-                    <div className="form-group-row">
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Vehicle Type</label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Vehicle Type</label>
                         <select 
-                          className="form-control" 
                           value={vehicleForm.type} 
                           onChange={(e) => setVehicleForm({...vehicleForm, type: e.target.value})}
+                          className="w-full px-2 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-white"
                         >
                           <option value="Sedan">Sedan</option>
                           <option value="SUV">SUV</option>
@@ -917,55 +969,55 @@ const AdminDashboard = ({ setAdminMode }) => {
                           <option value="Luxury Vehicle">Luxury Vehicle</option>
                         </select>
                       </div>
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Passenger Seats</label>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Passenger Seats</label>
                         <input 
                           type="number" 
-                          className="form-control" 
                           min="1"
                           required 
                           value={vehicleForm.seats} 
                           onChange={(e) => setVehicleForm({...vehicleForm, seats: e.target.value})} 
+                          className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </div>
                     </div>
 
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Luggage Capacity</label>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Luggage Capacity</label>
                       <input 
                         type="text" 
-                        className="form-control" 
                         placeholder="e.g. 3 Large Bags"
                         required 
                         value={vehicleForm.luggage} 
                         onChange={(e) => setVehicleForm({...vehicleForm, luggage: e.target.value})} 
+                        className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
 
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Vehicle Image URL</label>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Vehicle Image URL</label>
                       <input 
                         type="url" 
-                        className="form-control" 
                         required 
                         value={vehicleForm.image} 
                         onChange={(e) => setVehicleForm({...vehicleForm, image: e.target.value})} 
+                        className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
 
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Features (comma separated)</label>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Features (comma separated)</label>
                       <input 
                         type="text" 
-                        className="form-control" 
-                        placeholder="Feature 1, Feature 2, etc." 
+                        placeholder="AC, WiFi, Mineral Water, etc." 
                         value={vehicleForm.features} 
                         onChange={(e) => setVehicleForm({...vehicleForm, features: e.target.value})} 
+                        className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
 
-                    <div className="form-group-row">
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', color: 'var(--text-dark)', cursor: 'pointer' }}>
+                    <div className="flex gap-6 py-2">
+                      <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer">
                         <input 
                           type="checkbox" 
                           checked={vehicleForm.driverIncluded} 
@@ -973,7 +1025,7 @@ const AdminDashboard = ({ setAdminMode }) => {
                         />
                         Driver Included
                       </label>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', color: 'var(--text-dark)', cursor: 'pointer' }}>
+                      <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer">
                         <input 
                           type="checkbox" 
                           checked={vehicleForm.ac} 
@@ -983,20 +1035,29 @@ const AdminDashboard = ({ setAdminMode }) => {
                       </label>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '16px' }}>
-                      <button type="button" className="btn btn-secondary" onClick={() => setVehicleModalOpen(false)}>Cancel</button>
-                      <button type="submit" className="btn btn-primary">Save Vehicle</button>
+                    <div className="flex gap-3 justify-end pt-4 border-t">
+                      <button 
+                        type="button" 
+                        onClick={() => setVehicleModalOpen(false)}
+                        className="border border-gray-300 hover:border-charcoal text-gray-600 px-4 py-2 rounded-lg text-xs font-bold transition-all"
+                      >
+                        Cancel
+                      </button>
+                      <button 
+                        type="submit" 
+                        className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow"
+                      >
+                        Save Vehicle
+                      </button>
                     </div>
                   </form>
                 </div>
               </div>
             )}
 
-          </>
+          </div>
         )}
       </main>
     </div>
   );
-};
-
-export default AdminDashboard;
+}

@@ -1,88 +1,82 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Compass, Facebook, Instagram, Twitter, Mail, MapPin, Phone } from 'lucide-react';
 
-const Footer = ({ onNavClick }) => {
+export default function Footer() {
   const currentYear = new Date().getFullYear();
 
-  const handleLinkClick = (e, id) => {
-    e.preventDefault();
-    onNavClick(id);
-  };
-
   return (
-    <footer className="footer-bg">
-      <div className="footer-grid">
+    <footer className="bg-charcoal-dark text-gray-300 border-t border-gray-800">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 text-left">
         {/* Company Column */}
-        <div className="footer-col">
-          <a href="#" className="logo" style={{ color: '#FFF', marginBottom: '20px' }}>
-            <Compass size={28} className="logo-icon" style={{ color: 'var(--secondary)' }} />
-            DEURALI<span>TOURS</span>
-          </a>
-          <p className="footer-desc">
+        <div className="lg:col-span-4 space-y-6">
+          <Link to="/" className="inline-flex items-center gap-2 text-white font-extrabold text-2xl tracking-wider">
+            <Compass className="w-8 h-8 text-primary" />
+            <span>DEURALI</span>
+            <span className="text-primary font-normal">TOURS</span>
+          </Link>
+          <p className="text-gray-400 text-sm leading-relaxed">
             Deurali Tour & Adventure is Pokhara's trusted private car & jeep booking service. From 24/7 instant cabs to Muktinath, Chitwan, and city sightseeing tours, we get you there safely and comfortably.
           </p>
-          <div className="social-links">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Facebook">
-              <Facebook size={18} />
+          <div className="flex gap-4">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-colors text-gray-400" aria-label="Facebook">
+              <Facebook className="w-4 h-4" />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Instagram">
-              <Instagram size={18} />
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-colors text-gray-400" aria-label="Instagram">
+              <Instagram className="w-4 h-4" />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Twitter">
-              <Twitter size={18} />
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-colors text-gray-400" aria-label="Twitter">
+              <Twitter className="w-4 h-4" />
             </a>
           </div>
         </div>
 
         {/* Quick Links Column */}
-        <div className="footer-col">
-          <h4>Quick Links</h4>
-          <ul className="footer-links">
-            <li><a href="#home" onClick={(e) => handleLinkClick(e, 'home')}>Home</a></li>
-            <li><a href="#packages" onClick={(e) => handleLinkClick(e, 'packages')}>Tour Packages</a></li>
-            <li><a href="#fleet" onClick={(e) => handleLinkClick(e, 'fleet')}>Our Fleet</a></li>
-            <li><a href="#destinations" onClick={(e) => handleLinkClick(e, 'destinations')}>Destinations</a></li>
-            <li><a href="#gallery" onClick={(e) => handleLinkClick(e, 'gallery')}>Photo Gallery</a></li>
+        <div className="lg:col-span-2 space-y-4">
+          <h4 className="text-white font-bold text-sm uppercase tracking-wider">Quick Links</h4>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/" className="hover:text-primary transition-colors">Home</Link></li>
+            <li><Link to="/packages" className="hover:text-primary transition-colors">Tour Packages</Link></li>
+            <li><Link to="/fleet" className="hover:text-primary transition-colors">Our Fleet</Link></li>
+            <li><Link to="/gallery" className="hover:text-primary transition-colors">Photo Gallery</Link></li>
           </ul>
         </div>
 
         {/* Support Column */}
-        <div className="footer-col">
-          <h4>Support & Info</h4>
-          <ul className="footer-links">
-            <li><a href="#about" onClick={(e) => handleLinkClick(e, 'about')}>About Us</a></li>
-            <li><a href="#contact" onClick={(e) => handleLinkClick(e, 'contact')}>Contact Us</a></li>
-            <li><a href="#faq" onClick={(e) => handleLinkClick(e, 'faq')}>FAQs</a></li>
-            <li><a href="#privacy">Privacy Policy</a></li>
+        <div className="lg:col-span-2 space-y-4">
+          <h4 className="text-white font-bold text-sm uppercase tracking-wider">Support & Info</h4>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
+            <li><Link to="/services" className="hover:text-primary transition-colors">Services</Link></li>
+            <li><Link to="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
+            <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
           </ul>
         </div>
 
         {/* Contact Details Column */}
-        <div className="footer-col">
-          <h4>Get In Touch</h4>
-          <ul className="footer-contact-list">
-            <li>
-              <MapPin size={18} />
+        <div className="lg:col-span-4 space-y-4">
+          <h4 className="text-white font-bold text-sm uppercase tracking-wider">Get In Touch</h4>
+          <ul className="space-y-4 text-sm text-gray-400">
+            <li className="flex gap-3 items-start">
+              <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <span>Lakeside-6, Pokhara, Nepal<br />Thamel, Kathmandu, Nepal</span>
             </li>
-            <li>
-              <Phone size={18} />
+            <li className="flex gap-3 items-start">
+              <Phone className="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <span>+977-61-469000<br />+977-98560-12345</span>
             </li>
-            <li>
-              <Mail size={18} />
+            <li className="flex gap-3 items-start">
+              <Mail className="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <span>info@deuralitravel.com<br />bookings@deuralitravel.com</span>
             </li>
           </ul>
         </div>
       </div>
 
-      <div className="footer-bottom">
+      <div className="border-t border-gray-800 py-8 text-center text-xs text-gray-500 max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between gap-4">
         <p>&copy; {currentYear} Deurali Tour & Adventure Pvt. Ltd. All rights reserved.</p>
         <p>Designed with ❤️ for Nepali Adventure</p>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}
