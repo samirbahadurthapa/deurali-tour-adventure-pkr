@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
-  Compass, Menu, X, CalendarCheck, Phone, ShieldAlert, LogIn, LogOut
+  Compass,
+  Menu,
+  X,
+  CalendarCheck,
+  Phone,
+  ShieldAlert,
+  LogIn,
+  LogOut,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -36,8 +43,8 @@ export default function Navbar({ adminAuthed, handleLogout }) {
     }`}>
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
         {/* Logo */}
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           onClick={() => setMobileMenuOpen(false)}
           className="flex items-center gap-2.5 group text-white"
         >
@@ -90,7 +97,7 @@ export default function Navbar({ adminAuthed, handleLogout }) {
               >
                 <ShieldAlert className="w-4 h-4" /> Admin
               </Link>
-              <button 
+              <button
                 onClick={handleLogout}
                 className="text-gray-300 hover:text-white px-3 py-2 rounded-lg transition-all hover:bg-white/5 duration-200 flex items-center gap-1.5 text-sm font-semibold"
                 title="Logout"
