@@ -32,7 +32,7 @@ const FEATURES = [
   },
   {
     title: 'Well-Maintained Fleet',
-    desc: 'Our Hyundai Creta and Mahindra Scorpio are regularly serviced, clean, and equipped for both city sightseeing and rugged mountain routes.',
+    desc: 'Our Suzuki Vitara Brezza, Mahindra Scorpio, and Toyota Hiace are regularly serviced, clean, and equipped for both city sightseeing and rugged mountain routes.',
     icon: <Car className="w-7 h-7" />
   },
   {
