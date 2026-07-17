@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
-  Compass, Menu, X, CalendarCheck, Phone, ShieldAlert, LogIn, LogOut
+  Compass,
+  Menu,
+  X,
+  CalendarCheck,
+  Phone,
+  ShieldAlert,
+  LogIn,
+  LogOut,
 } from "lucide-react";
 
 const NAV_LINKS = [
@@ -28,20 +35,26 @@ export default function Navbar({ adminAuthed, handleLogout }) {
   }, []);
 
   return (
-    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-      scrolled ? "bg-charcoal-dark/95 shadow-md py-3" : "bg-charcoal/80 py-4"
-    } glass`}>
+    <header
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled ? "bg-charcoal-dark/95 shadow-md py-3" : "bg-charcoal/80 py-4"
+      } glass`}
+    >
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
         {/* Logo */}
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           onClick={() => setMobileMenuOpen(false)}
           className="flex items-center gap-2 group text-white"
         >
           <Compass className="w-8 h-8 text-primary transition-transform group-hover:rotate-45 duration-300" />
           <div className="flex flex-col text-left leading-none">
-            <span className="font-extrabold text-lg tracking-wider">DEURALI</span>
-            <span className="text-primary text-[10px] font-bold tracking-widest mt-0.5">TOURS & TRAVEL</span>
+            <span className="text-primary text-xs md:text-sm font-bold tracking-[0.35em] mt-0.5 drop-shadow-sm">
+              DEURALI
+            </span>
+            <span className="text-primary text-xs md:text-sm font-bold tracking-[0.35em] mt-0.5 drop-shadow-sm">
+              TOURS & ADVENTURE
+            </span>
           </div>
         </Link>
 
@@ -52,10 +65,10 @@ export default function Navbar({ adminAuthed, handleLogout }) {
               <li key={link.path}>
                 <NavLink
                   to={link.path}
-                  className={({ isActive }) => 
+                  className={({ isActive }) =>
                     `text-sm font-semibold transition-colors py-2 border-b-2 ${
-                      isActive 
-                        ? "text-primary border-primary" 
+                      isActive
+                        ? "text-primary border-primary"
                         : "text-gray-300 border-transparent hover:text-white hover:border-white/50"
                     }`
                   }
@@ -69,8 +82,8 @@ export default function Navbar({ adminAuthed, handleLogout }) {
 
         {/* Right Actions */}
         <div className="hidden lg:flex items-center gap-4">
-          <a 
-            href="tel:+9779856012345" 
+          <a
+            href="tel:+9779856012345"
             className="text-gray-300 hover:text-white flex items-center gap-1.5 text-sm font-semibold transition-colors"
           >
             <Phone className="w-4 h-4 text-primary" />
@@ -79,13 +92,13 @@ export default function Navbar({ adminAuthed, handleLogout }) {
 
           {adminAuthed ? (
             <>
-              <Link 
-                to="/admin" 
+              <Link
+                to="/admin"
                 className="bg-primary/20 text-primary border border-primary/30 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/30 transition-colors flex items-center gap-1"
               >
                 <ShieldAlert className="w-4 h-4" /> Admin
               </Link>
-              <button 
+              <button
                 onClick={handleLogout}
                 className="text-gray-300 hover:text-white p-2 rounded-lg transition-colors flex items-center gap-1 text-sm font-semibold"
                 title="Logout"
@@ -94,8 +107,8 @@ export default function Navbar({ adminAuthed, handleLogout }) {
               </button>
             </>
           ) : (
-            <Link 
-              to="/login" 
+            <Link
+              to="/login"
               className="text-gray-300 hover:text-white flex items-center gap-1 text-sm font-semibold transition-colors"
             >
               <LogIn className="w-4 h-4" />
@@ -103,8 +116,8 @@ export default function Navbar({ adminAuthed, handleLogout }) {
             </Link>
           )}
 
-          <Link 
-            to="/booking" 
+          <Link
+            to="/booking"
             className="bg-primary hover:bg-primary-dark text-white font-bold px-5 py-2.5 rounded-lg text-sm transition-all shadow-md flex items-center gap-1.5"
           >
             <CalendarCheck className="w-4 h-4" /> Book Now
@@ -115,8 +128,12 @@ export default function Navbar({ adminAuthed, handleLogout }) {
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="lg:hidden text-white/90 hover:text-white focus:outline-none transition-colors"
-        >
-          {mobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+        >s
+          {mobileMenuOpen ? (
+            <X className="w-7 h-7" />
+          ) : (
+            <Menu className="w-7 h-7" />
+          )}
         </button>
       </div>
 
@@ -129,10 +146,10 @@ export default function Navbar({ adminAuthed, handleLogout }) {
                 <NavLink
                   to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={({ isActive }) => 
+                  className={({ isActive }) =>
                     `block text-base font-semibold py-2 ${
-                      isActive 
-                        ? "text-primary" 
+                      isActive
+                        ? "text-primary"
                         : "text-gray-300 hover:text-white"
                     }`
                   }
@@ -146,8 +163,8 @@ export default function Navbar({ adminAuthed, handleLogout }) {
           <div className="w-full h-[1px] bg-gray-800" />
 
           <div className="w-full flex flex-col items-center gap-4">
-            <a 
-              href="tel:+9779856012345" 
+            <a
+              href="tel:+9779856012345"
               className="text-gray-300 flex items-center gap-1.5 text-sm font-semibold"
             >
               <Phone className="w-4 h-4 text-primary" />
@@ -156,23 +173,26 @@ export default function Navbar({ adminAuthed, handleLogout }) {
 
             {adminAuthed ? (
               <div className="flex gap-4">
-                <Link 
-                  to="/admin" 
+                <Link
+                  to="/admin"
                   onClick={() => setMobileMenuOpen(false)}
                   className="bg-primary/20 text-primary border border-primary/30 px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1"
                 >
                   <ShieldAlert className="w-4 h-4" /> Admin Portal
                 </Link>
-                <button 
-                  onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
                   className="bg-gray-800 text-gray-300 px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1"
                 >
                   <LogOut className="w-4 h-4" /> Logout
                 </button>
               </div>
             ) : (
-              <Link 
-                to="/login" 
+              <Link
+                to="/login"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-gray-300 hover:text-white flex items-center gap-1 text-sm font-semibold"
               >
@@ -181,8 +201,8 @@ export default function Navbar({ adminAuthed, handleLogout }) {
               </Link>
             )}
 
-            <Link 
-              to="/booking" 
+            <Link
+              to="/booking"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 rounded-lg text-sm transition-all shadow-md text-center flex justify-center items-center gap-1.5"
             >
