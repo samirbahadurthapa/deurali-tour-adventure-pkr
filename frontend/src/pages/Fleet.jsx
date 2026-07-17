@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Luggage, Snowflake, UserCheck, CheckCircle, ArrowRight, Car } from 'lucide-react';
+import bgImage from "../asset/background_image.avif"; 
+
 
 const CATEGORIES = ['All', 'Sedan', 'SUV', 'Jeep', 'Hiace', 'Luxury Vehicle'];
 
@@ -17,7 +19,7 @@ export default function Fleet({ vehicles = [] }) {
     <div className="w-full">
       {/* Banner */}
       <section className="bg-charcoal-dark text-white py-16 px-4 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center opacity-25" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=1200&q=80')" }} />
+        <div className="absolute inset-0 bg-cover bg-center opacity-25" style={{ backgroundImage: `url(${bgImage})` }} />
         <div className="relative max-w-4xl mx-auto space-y-4">
           <h1 className="text-4xl md:text-5xl font-extrabold">Our Fleet</h1>
           <p className="text-gray-300 text-base md:text-lg max-w-2xl mx-auto">
