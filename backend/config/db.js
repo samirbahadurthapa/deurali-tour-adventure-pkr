@@ -1,21 +1,25 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    const connStr = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/deurali_db';
-    console.log(`Connecting to MongoDB at: ${connStr}...`);
-    
-    // Set a timeout of 3 seconds for connection attempts so it falls back quickly
-    const conn = await mongoose.connect(connStr, {
-      serverSelectionTimeoutMS: 3000
+    console.log("Connecting to MongoDB Atlas...");
+
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
     });
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-    global.useMockDB = false;
+
+    console.log("===================================");
+    console.log("✅ MongoDB Atlas Connected");
+    console.log(`Host: ${conn.connection.host}`);
+    console.log(`Database: ${conn.connection.name}`);
+    console.log("===================================");
   } catch (error) {
-    console.warn(`\n⚠️  MongoDB connection failed: ${error.message}`);
-    console.warn(`🟢 Switching to local JSON file-based storage database in 'backend/data/'.`);
-    console.warn(`   No MongoDB installation or running service required to run the project!\n`);
-    global.useMockDB = true;
+    console.error("===================================");
+    console.error("❌ MongoDB Connection Failed");
+    console.error(error.message);
+    console.error("===================================");
+
+    process.exit(1);
   }
 };
 
