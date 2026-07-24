@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { getModelProxy } from './modelProxy.js';
 
 const vehicleSchema = new mongoose.Schema({
   name: { type: String, required: true }, // e.g. "Hyundai Creta"
@@ -18,7 +17,6 @@ const vehicleSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const mongooseVehicle = mongoose.model('Vehicle', vehicleSchema);
-const Vehicle = getModelProxy(mongooseVehicle, 'Vehicle');
+const Vehicle = mongoose.model('Vehicle', vehicleSchema);
 
 export default Vehicle;

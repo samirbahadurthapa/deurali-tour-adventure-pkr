@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { getModelProxy } from './modelProxy.js';
 
 const bookingSchema = new mongoose.Schema({
   packageId: { 
@@ -72,7 +71,6 @@ const bookingSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const mongooseBooking = mongoose.model('Booking', bookingSchema);
-const Booking = getModelProxy(mongooseBooking, 'Booking');
+const Booking = mongoose.model('Booking', bookingSchema);
 
 export default Booking;

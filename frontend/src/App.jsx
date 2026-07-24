@@ -15,6 +15,7 @@ import Packages from './pages/Packages';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Gallery from './pages/Gallery';
+import Register from './pages/Register';
 
 import { getAdminToken, clearAdminToken } from './utils/api.js';
 
@@ -84,7 +85,7 @@ export default function App() {
     navigate('/');
   };
 
-  // Determine if we should show header/footer (we hide them on admin/login pages)
+  // Determine if we should show header/footer (we hide them on admin/login/register pages if needed, let's keep it visible on register page!)
   const isAdminRoute = location.pathname.startsWith('/admin');
   const isLoginRoute = location.pathname.startsWith('/login');
   const hideLayout = isAdminRoute || isLoginRoute;
@@ -126,6 +127,7 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/gallery" element={<Gallery gallery={gallery} />} />
+          <Route path="/register" element={<Register />} />
           
           <Route 
             path="/login" 

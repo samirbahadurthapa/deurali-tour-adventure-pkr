@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { getModelProxy } from './modelProxy.js';
 
 const testimonialSchema = new mongoose.Schema({
   clientName: { type: String, required: true },
@@ -12,7 +11,6 @@ const testimonialSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const mongooseTestimonial = mongoose.model('Testimonial', testimonialSchema);
-const Testimonial = getModelProxy(mongooseTestimonial, 'Testimonial');
+const Testimonial = mongoose.model('Testimonial', testimonialSchema);
 
 export default Testimonial;

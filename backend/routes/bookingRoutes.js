@@ -5,19 +5,20 @@ import {
   updateBookingStatus, 
   deleteBooking 
 } from '../controllers/bookingController.js';
+import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // GET all bookings (Admin)
-router.get('/', getBookings);
+router.get('/', requireAuth, getBookings);
 
 // POST new booking (Public User)
 router.post('/', createBooking);
 
 // PUT update booking status (Admin)
-router.put('/:id/status', updateBookingStatus);
+router.put('/:id/status', requireAuth, updateBookingStatus);
 
 // DELETE booking (Admin)
-router.delete('/:id', deleteBooking);
+router.delete('/:id', requireAuth, deleteBooking);
 
 export default router;

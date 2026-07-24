@@ -352,6 +352,37 @@ export default function AdminDashboard({ handleLogout }) {
     }
   };
 
+  const handleImageUpload = async (e, type) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const res = await authFetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        if (type === 'gallery') {
+          setGalleryForm(prev => ({ ...prev, url: data.url }));
+        } else if (type === 'package') {
+          setPkgForm(prev => ({ ...prev, image: data.url }));
+        } else if (type === 'vehicle') {
+          setVehicleForm(prev => ({ ...prev, image: data.url }));
+        }
+      } else {
+        alert(data.message || 'Upload failed');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Upload failed due to network error');
+    }
+  };
+
   const menuItems = [
     { id: 'bookings', label: 'Bookings', icon: <Calendar className="w-4 h-4" /> },
     { id: 'inquiries', label: 'Inquiries', icon: <MessageSquare className="w-4 h-4" /> },
@@ -649,8 +680,8 @@ export default function AdminDashboard({ handleLogout }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {vehicles.map(v => (
                     <div className="bg-white border border-gray-150 rounded-xl overflow-hidden shadow-sm flex flex-col justify-between" key={v._id}>
-                      <div className="relative h-44 bg-gray-100">
-                        <img className="w-full h-full object-cover" src={v.image} alt={v.name} />
+                      <div className="relative h-44 bg-gray-50 flex items-center justify-center p-2">
+                        <img className="w-full h-full object-contain" src={v.image} alt={v.name} />
                         <span className="absolute top-3 right-3 bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">{v.type}</span>
                       </div>
                       <div className="p-4 flex-grow flex flex-col justify-between space-y-4">
@@ -698,15 +729,38 @@ export default function AdminDashboard({ handleLogout }) {
                   <form onSubmit={handleGallerySubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-3">
                       <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Photo URL</label>
-                        <input 
-                          type="url" 
-                          placeholder="https://unsplash.com/..." 
-                          required
-                          value={galleryForm.url}
-                          onChange={(e) => setGalleryForm({...galleryForm, url: e.target.value})}
-                          className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
-                        />
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Photo URL / Upload</label>
+                        <div className="flex gap-2">
+                          <input 
+                            type="text" 
+                            placeholder="https://unsplash.com/..." 
+                            required
+                            value={galleryForm.url}
+                            onChange={(e) => setGalleryForm({...galleryForm, url: e.target.value})}
+                            className="flex-1 px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                          />
+                          <label className="bg-primary hover:bg-primary-dark text-white px-3 py-2 rounded-lg text-xs font-bold cursor-pointer transition flex items-center justify-center shrink-0">
+                            Upload File
+                            <input 
+                              type="file" 
+                              accept="image/*"
+                              onChange={(e) => handleImageUpload(e, 'gallery')}
+                              className="hidden" 
+                            />
+                          </label>
+                        </div>
+                        {galleryForm.url && (
+                          <div className="mt-2 w-full h-32 rounded-lg overflow-hidden border border-gray-200 relative group">
+                            <img src={galleryForm.url} alt="Preview" className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => setGalleryForm({...galleryForm, url: ''})}
+                              className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 transition"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Title / Caption</label>
@@ -867,15 +921,39 @@ export default function AdminDashboard({ handleLogout }) {
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Main Image URL</label>
-                      <input 
-                        type="url" 
-                        required 
-                        value={pkgForm.image} 
-                        onChange={(e) => setPkgForm({...pkgForm, image: e.target.value})} 
-                        className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
-                      />
+                     <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Main Image URL / Upload</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="text" 
+                          required 
+                          value={pkgForm.image} 
+                          onChange={(e) => setPkgForm({...pkgForm, image: e.target.value})} 
+                          placeholder="Image URL or upload below"
+                          className="flex-1 px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                        />
+                        <label className="bg-primary hover:bg-primary-dark text-white px-3 py-2 rounded-lg text-xs font-bold cursor-pointer transition flex items-center justify-center shrink-0">
+                          Upload File
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            onChange={(e) => handleImageUpload(e, 'package')}
+                            className="hidden" 
+                          />
+                        </label>
+                      </div>
+                      {pkgForm.image && (
+                        <div className="mt-2 w-full h-32 rounded-lg overflow-hidden border border-gray-200 relative group">
+                          <img src={pkgForm.image} alt="Preview" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => setPkgForm({...pkgForm, image: ''})}
+                            className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 transition"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
                     </div>
 
                     <div>
@@ -995,14 +1073,38 @@ export default function AdminDashboard({ handleLogout }) {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Vehicle Image URL</label>
-                      <input 
-                        type="url" 
-                        required 
-                        value={vehicleForm.image} 
-                        onChange={(e) => setVehicleForm({...vehicleForm, image: e.target.value})} 
-                        className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
-                      />
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Vehicle Image URL / Upload</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="text" 
+                          required 
+                          value={vehicleForm.image} 
+                          onChange={(e) => setVehicleForm({...vehicleForm, image: e.target.value})} 
+                          placeholder="Image URL or upload below"
+                          className="flex-1 px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                        />
+                        <label className="bg-primary hover:bg-primary-dark text-white px-3 py-2 rounded-lg text-xs font-bold cursor-pointer transition flex items-center justify-center shrink-0">
+                          Upload File
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            onChange={(e) => handleImageUpload(e, 'vehicle')}
+                            className="hidden" 
+                          />
+                        </label>
+                      </div>
+                      {vehicleForm.image && (
+                        <div className="mt-2 w-full h-32 rounded-lg overflow-hidden border border-gray-205 relative group flex items-center justify-center p-2 bg-gray-50">
+                          <img src={vehicleForm.image} alt="Preview" className="w-full h-full object-contain" />
+                          <button
+                            type="button"
+                            onClick={() => setVehicleForm({...vehicleForm, image: ''})}
+                            className="absolute top-2 right-2 bg-red-650 hover:bg-red-750 text-white rounded-full p-1 transition animate-none"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
                     </div>
 
                     <div>

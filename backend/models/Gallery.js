@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { getModelProxy } from './modelProxy.js';
 
 const gallerySchema = new mongoose.Schema({
   url: { type: String, required: true },
@@ -14,7 +13,6 @@ const gallerySchema = new mongoose.Schema({
   timestamps: true
 });
 
-const mongooseGallery = mongoose.model('Gallery', gallerySchema);
-const Gallery = getModelProxy(mongooseGallery, 'Gallery');
+const Gallery = mongoose.model('Gallery', gallerySchema);
 
 export default Gallery;

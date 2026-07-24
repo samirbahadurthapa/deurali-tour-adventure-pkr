@@ -248,10 +248,7 @@ export default function Home({ packages = [], vehicles = [], testimonials = [], 
             </div>
           </div>
           <div className="flex gap-4">
-            <a href="tel:+9779856012345" className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 shadow-md transition-colors">
-              <Phone className="w-4 h-4" /> Call Hotline
-            </a>
-            <a href="https://wa.me/9779856012345" target="_blank" rel="noopener noreferrer" className="bg-whatsapp hover:bg-green-600 text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 shadow-md transition-colors">
+            <a href="https://wa.me/9779823372236" target="_blank" rel="noopener noreferrer" className="bg-whatsapp hover:bg-green-600 text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 shadow-md transition-colors">
               WhatsApp Us
             </a>
           </div>
@@ -323,8 +320,8 @@ export default function Home({ packages = [], vehicles = [], testimonials = [], 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {vehicles.slice(0, 3).map((vehicle, index) => (
                 <div key={index} className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
-                  <div className="relative h-48 bg-gray-200 overflow-hidden">
-                    <img src={vehicle.image} alt={vehicle.name} className="w-full h-full object-cover" />
+                  <div className="relative h-48 bg-gray-50 overflow-hidden flex items-center justify-center p-2">
+                    <img src={vehicle.image} alt={vehicle.name} className="w-full h-full object-contain" />
                     <span className="absolute top-4 right-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase">
                       {vehicle.type}
                     </span>

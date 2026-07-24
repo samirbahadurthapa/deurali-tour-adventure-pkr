@@ -6,6 +6,7 @@ import {
   updateVehicle, 
   deleteVehicle 
 } from '../controllers/vehicleController.js';
+import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -16,12 +17,12 @@ router.get('/', getVehicles);
 router.get('/:id', getVehicleById);
 
 // POST create vehicle (Admin)
-router.post('/', createVehicle);
+router.post('/', requireAuth, createVehicle);
 
 // PUT update vehicle (Admin)
-router.put('/:id', updateVehicle);
+router.put('/:id', requireAuth, updateVehicle);
 
 // DELETE vehicle (Admin)
-router.delete('/:id', deleteVehicle);
+router.delete('/:id', requireAuth, deleteVehicle);
 
 export default router;

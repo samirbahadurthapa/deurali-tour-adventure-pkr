@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
+import User from '../models/User.js';
 
 const router = express.Router();
 
@@ -59,4 +60,58 @@ router.post('/login', loginLimiter, async (req, res) => {
   }
 });
 
+// POST /register - Register a new user
+router.post('/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Name, email, and password are required' });
+    }
+
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Please provide a valid email address' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+    }
+
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    const user = await User.create({
+      name,
+      email,
+      password
+    });
+
+    if (user) {
+      const validJwtSecret = process.env.JWT_SECRET || DEFAULT_JWT_SECRET;
+      const token = jwt.sign(
+        { id: user._id, role: user.role },
+        validJwtSecret,
+        { expiresIn: process.env.JWT_EXPIRES_IN || '8h' }
+      );
+
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        token
+      });
+    } else {
+      res.status(400).json({ message: 'Invalid user data' });
+    }
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ message: 'Server error during registration' });
+  }
+});
+
 export default router;
+

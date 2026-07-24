@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { getModelProxy } from './modelProxy.js';
 
 const itinerarySchema = new mongoose.Schema({
   day: { type: Number, required: true },
@@ -29,7 +28,6 @@ const trekPackageSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const mongooseTrekPackage = mongoose.model('TrekPackage', trekPackageSchema);
-const TrekPackage = getModelProxy(mongooseTrekPackage, 'TrekPackage');
+const TrekPackage = mongoose.model('TrekPackage', trekPackageSchema);
 
 export default TrekPackage;

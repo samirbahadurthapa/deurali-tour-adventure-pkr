@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { getModelProxy } from './modelProxy.js';
 
 const inquirySchema = new mongoose.Schema({
   name: { 
@@ -37,7 +36,6 @@ const inquirySchema = new mongoose.Schema({
   timestamps: true
 });
 
-const mongooseInquiry = mongoose.model('Inquiry', inquirySchema);
-const Inquiry = getModelProxy(mongooseInquiry, 'Inquiry');
+const Inquiry = mongoose.model('Inquiry', inquirySchema);
 
 export default Inquiry;

@@ -12,7 +12,6 @@ import samplePackages from './data/packages.js';
 import sampleVehicles from './data/vehicles.js';
 import sampleTestimonials from './data/testimonials.js';
 import sampleGallery from './data/gallery.js';
-import writeSeedDataToJSONFiles from './writeJson.js';
 
 dotenv.config();
 
@@ -22,7 +21,7 @@ const runSeeder = async () => {
     console.log(`Attempting connection to seed MongoDB at: ${connStr}`);
     
     // Connect with a fast timeout
-    await mongoose.connect(connStr, { serverSelectionTimeoutMS: 2000 });
+    await mongoose.connect(connStr, { serverSelectionTimeoutMS: 5000 });
     console.log('MongoDB Connected. Clearing and seeding database...');
 
     // Clear existing data
@@ -42,9 +41,8 @@ const runSeeder = async () => {
     console.log('Successfully seeded MongoDB collections.');
     mongoose.connection.close();
   } catch (error) {
-    console.log(`\n⚠️  MongoDB connection failed: ${error.message}`);
-    console.log('🟢 Seeding JSON files under backend/data/ for local standalone dev mode...');
-    writeSeedDataToJSONFiles();
+    console.error(`\n⚠️  MongoDB connection/seeding failed: ${error.message}`);
+    process.exit(1);
   }
 };
 

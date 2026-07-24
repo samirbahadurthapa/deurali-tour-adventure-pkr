@@ -5,7 +5,6 @@ import {
   Menu,
   X,
   CalendarCheck,
-  Phone,
   ShieldAlert,
   LogIn,
   LogOut,
@@ -81,13 +80,12 @@ export default function Navbar({ adminAuthed, handleLogout }) {
 
         {/* Right Actions */}
         <div className="hidden lg:flex items-center gap-4">
-          <a 
-            href="tel:+9779856012345" 
-            className="text-gray-300 hover:text-white flex items-center gap-2 text-sm font-semibold transition-all duration-300 px-3.5 py-1.5 rounded-full border border-white/10 hover:border-primary/40 hover:bg-white/5"
+          <Link 
+            to="/register" 
+            className="text-gray-300 hover:text-white flex items-center gap-2 text-sm font-semibold transition-all duration-300 px-4 py-2 rounded-lg border border-white/10 hover:border-primary/40 hover:bg-white/5"
           >
-            <Phone className="w-3.5 h-3.5 text-primary" />
-            <span>+977-98560-12345</span>
-          </a>
+            <span>Register</span>
+          </Link>
 
           {adminAuthed ? (
             <>
@@ -167,13 +165,13 @@ export default function Navbar({ adminAuthed, handleLogout }) {
               <div className="w-full h-[1px] bg-white/10" />
 
               <div className="w-full flex flex-col items-center gap-4">
-                <a 
-                  href="tel:+9779856012345" 
-                  className="text-gray-300 hover:text-white flex items-center gap-2 text-sm font-semibold transition-colors px-4 py-2 rounded-full border border-white/10"
+                <Link 
+                  to="/register" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-gray-300 hover:text-white flex items-center gap-2 text-sm font-semibold transition-colors px-4 py-2 rounded-full border border-white/10 w-full justify-center"
                 >
-                  <Phone className="w-4 h-4 text-primary" />
-                  <span>+977-98560-12345</span>
-                </a>
+                  <span>Register</span>
+                </Link>
 
                 {adminAuthed ? (
                   <div className="flex gap-4 w-full justify-center">
@@ -217,3 +215,4 @@ export default function Navbar({ adminAuthed, handleLogout }) {
     </header>
   );
 }
+

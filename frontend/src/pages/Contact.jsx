@@ -94,7 +94,7 @@ export default function Contact() {
               <div className="text-sm">
                 <h4 className="font-bold text-charcoal-dark mb-1">Call Center</h4>
                 <p className="text-gray-500">Hotline: <a href="tel:+97761469000" className="hover:text-primary transition-colors">+977-61-469000</a></p>
-                <p className="text-gray-500">WhatsApp: <a href="tel:+9779856012345" className="hover:text-primary transition-colors">+977-98560-12345</a></p>
+                <p className="text-gray-500">WhatsApp: <a href="https://wa.me/9779823372236" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">+977-98233-72236</a></p>
               </div>
             </div>
 
